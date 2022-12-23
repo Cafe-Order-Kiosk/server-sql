@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kiosk.cafe.mapper.MenuMapper">
+
+    <!-- Menu  -->
+    <resultMap type="com.kiosk.cafe.dto.Menu" id="menu">
+        <result column="menu_no" property="no" />
+        <result column="menu_type" property="type" />
+        <result column="menu_name" property="name" />
+        <result column="menu_img_url" property="imgUrl" />
+        <result column="menu_shot" property="shot" />
+        <result column="menu_syrup" property="syrup" />
+        <result column="menu_price_small" property="priceSmall" />
+        <result column="menu_price_middle" property="priceMiddle" />
+        <result column="menu_price_large" property="priceLarge" />
+        <result column="save_folder_name" property="saveFolderName" />
+        <result column="save_file_name" property="saveFileName" />
+        <result column="origin_file_name" property="originFileName" />
+        <result column="" property="originFileName" />
+    </resultMap>
+
+    <!--  MenuSearchDto  -->
+    <resultMap id="MenuSearchDto" type="com.kiosk.cafe.dto.MenuSearchDto">
+        <result column="menu_type" property="type" />
+        <result column="menu_name" property="name" />
+    </resultMap>
+
+    <!--  메뉴 리스트 조회  -->
+    <select id="selectMenuList" parameterType="menuSelectDto" resultType="Menu">
+        SELECT *
+        FROM menus
+        <where>
+            <if test="menu_type != null">AND menu_type LIKE CONCAT("%", #{menu_type}, "%")</if>
+            <if test="menu_name != null">AND menu_type LIKE CONCAT("%", #{menu_type}, "%")</if>
+        </where>
+        <if test="skip != null">
+            LIMIT #{skip}, #{amount}
+        </if>
+    </select>
+
+    <!-- 단일 메뉴 조회 -->
+    <select id="selectMenuInfo" parameterType="int" resultType="Menu" >
+        SELECT * FROM menus
+        WHERE menu_no = #{no}
+    </select>
+
+    <!--  메뉴 추가  -->
+    <insert id="insertMenu" parameterType="Menu" >
+        INSERT INTO menus (
+                            menu_type, menu_name, menu_shot, menu_syrup,
+                            menu_price_small, menu_price_middle, menu_price_large,
+                            save_folder_name,  save_file_name, origin_file_name
+                           )
+        VALUE (#{type}, #{name}, #{shot}, #{syrup},
+               #{priceSmall}, #{priceMiddle}, #{priceLarge},
+               #{saveFolderName}, #{saveFileName}, #{originFileName} )
+    </insert>
+
+    <!--  메뉴 수정  -->
+    <update id="updateMenu" parameterType="Menu">
+        UPDATE menus
+        SET menu_type = #{type}, menu_name = #{name}, menu_shot = #{shot}, menu_syrup = #{syrup},
+            menu_price_small = #{priceSmall}, menu_price_middle = #{priceMiddle}, menu_price_large = #{priceLarge},
+            save_folder_name = #{saveFolderName}, save_file_name = #{saveFileName}, origin_file_name = #{originFileName}
+        WHERE menu_no = #{no}
+    </update>
+
+    <!--  메뉴 삭제  -->
+    <delete id="deleteMenu" parameterType="Menu">
+        DELETE
+        FROM menus
+        WHERE menu_no = #{no}
+    </delete>
+
+    <!--  메뉴 판매량 업데이트  -->
+    <update id="updateSaleCount" parameterType="int">
+        UPDATE menus
+        SET menu_sale_count = menu_sale_count + 1
+        WHERE menu_no = #{no}
+    </update>
+
+</mapper>
