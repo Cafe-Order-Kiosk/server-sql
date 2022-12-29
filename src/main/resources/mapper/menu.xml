@@ -4,37 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kiosk.cafe.mapper.MenuMapper">
-
     <!-- Menu  -->
-    <resultMap type="com.kiosk.cafe.dto.Menu" id="menu">
-        <result column="menu_no" property="no" />
-        <result column="menu_type" property="type" />
-        <result column="menu_name" property="name" />
-        <result column="menu_img_url" property="imgUrl" />
-        <result column="menu_shot" property="shot" />
-        <result column="menu_syrup" property="syrup" />
-        <result column="menu_price_small" property="priceSmall" />
-        <result column="menu_price_middle" property="priceMiddle" />
-        <result column="menu_price_large" property="priceLarge" />
-        <result column="save_folder_name" property="saveFolderName" />
-        <result column="save_file_name" property="saveFileName" />
-        <result column="origin_file_name" property="originFileName" />
-        <result column="" property="originFileName" />
+    <resultMap type="Menu" id="MenuMap">
+        <result property="no" column="menu_no"/>
+        <result property="type" column="menu_type"/>
+        <result property="name" column="menu_name"/>
+        <result property="imgUrl" column="menu_img_url"/>
+        <result property="shot" column="menu_shot"/>
+        <result property="syrup" column="menu_syrup"/>
+        <result property="priceSmall" column="menu_price_small"/>
+        <result property="priceMiddle" column="menu_price_middle"/>
+        <result property="priceLarge" column="menu_price_large"/>
+        <result property="saveFolderName" column="save_folder_name"/>
+        <result property="saveFileName" column="save_file_name"/>
+        <result property="originFileName" column="origin_file_name"/>
     </resultMap>
 
     <!--  MenuSearchDto  -->
-    <resultMap id="MenuSearchDto" type="com.kiosk.cafe.dto.MenuSearchDto">
-        <result column="menu_type" property="type" />
-        <result column="menu_name" property="name" />
+    <resultMap type="MenuSearchDto" id="MenuSearchDtoMap">
+        <result column="menu_type" property="type"/>
+        <result column="menu_name" property="name"/>
     </resultMap>
 
     <!--  메뉴 리스트 조회  -->
-    <select id="selectMenuList" parameterType="menuSelectDto" resultType="Menu">
+    <select id="selectMenuList" parameterType="MenuSearchDto" resultMap="MenuMap">
         SELECT *
         FROM menus
         <where>
-            <if test="menu_type != null">AND menu_type LIKE CONCAT("%", #{menu_type}, "%")</if>
-            <if test="menu_name != null">AND menu_type LIKE CONCAT("%", #{menu_type}, "%")</if>
+            <if test="type != null">AND menu_type LIKE CONCAT("%", #{type}, "%")</if>
+            <if test="name != null">AND menu_name LIKE CONCAT("%", #{name}, "%")</if>
         </where>
         <if test="skip != null">
             LIMIT #{skip}, #{amount}
@@ -42,29 +40,30 @@
     </select>
 
     <!-- 단일 메뉴 조회 -->
-    <select id="selectMenuInfo" parameterType="int" resultType="Menu" >
-        SELECT * FROM menus
+    <select id="selectMenuInfo" parameterType="int" resultMap="MenuMap">
+        SELECT *
+        FROM menus
         WHERE menu_no = #{no}
     </select>
 
     <!--  메뉴 추가  -->
-    <insert id="insertMenu" parameterType="Menu" >
-        INSERT INTO menus (
-                            menu_type, menu_name, menu_shot, menu_syrup,
-                            menu_price_small, menu_price_middle, menu_price_large,
-                            save_folder_name,  save_file_name, origin_file_name
-                           )
-        VALUE (#{type}, #{name}, #{shot}, #{syrup},
-               #{priceSmall}, #{priceMiddle}, #{priceLarge},
-               #{saveFolderName}, #{saveFileName}, #{originFileName} )
+    <insert id="insertMenu" parameterType="Menu">
+        INSERT INTO menus (menu_type, menu_name, menu_shot, menu_syrup,
+                           menu_price_small, menu_price_middle, menu_price_large,
+                           save_folder_name, save_file_name, origin_file_name)
+            VALUE (#{type}, #{name}, #{shot}, #{syrup},
+                   #{priceSmall}, #{priceMiddle}, #{priceLarge},
+                   #{saveFolderName}, #{saveFileName}, #{originFileName})
     </insert>
 
     <!--  메뉴 수정  -->
     <update id="updateMenu" parameterType="Menu">
         UPDATE menus
         SET menu_type = #{type}, menu_name = #{name}, menu_shot = #{shot}, menu_syrup = #{syrup},
-            menu_price_small = #{priceSmall}, menu_price_middle = #{priceMiddle}, menu_price_large = #{priceLarge},
+        menu_price_small = #{priceSmall}, menu_price_middle = #{priceMiddle}, menu_price_large = #{priceLarge},
+        <if test="saveFolderName != null">
             save_folder_name = #{saveFolderName}, save_file_name = #{saveFileName}, origin_file_name = #{originFileName}
+        </if>
         WHERE menu_no = #{no}
     </update>
 
@@ -76,7 +75,7 @@
     </delete>
 
     <!--  메뉴 판매량 업데이트  -->
-    <update id="updateSaleCount" parameterType="int">
+    <update id="updateSaleCount" parameterType="Integer">
         UPDATE menus
         SET menu_sale_count = menu_sale_count + 1
         WHERE menu_no = #{no}

@@ -13,6 +13,6 @@ public interface MenuService {
     public Menu getMenuInfo(int no) throws Exception;
     public int registMenu(Menu menu) throws Exception;
     public int modifyMenu(Menu menu) throws Exception;
-    public int removeMenu(Menu menu) throws Exception;
+    public int removeMenu(Integer no) throws Exception;
     public void modifySaleCount(int no) throws Exception;
 }

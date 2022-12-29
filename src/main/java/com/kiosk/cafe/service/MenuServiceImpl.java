@@ -3,6 +3,9 @@ package com.kiosk.cafe.service;
 import com.kiosk.cafe.dto.Menu;
 import com.kiosk.cafe.dto.MenuSearchDto;
 import com.kiosk.cafe.mapper.MenuMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,11 +13,10 @@ import java.util.List;
 @Service
 public class MenuServiceImpl implements MenuService{
 
-    private final MenuMapper menuMapper;
+    private Logger logger = LoggerFactory.getLogger(MenuServiceImpl.class);
 
-    public MenuServiceImpl(MenuMapper menuMapper) {
-        this.menuMapper = menuMapper;
-    }
+    @Autowired
+    private MenuMapper menuMapper;
 
     @Override
     public List<Menu> getMenuList(MenuSearchDto menuSearchDto) throws Exception {
@@ -37,8 +39,8 @@ public class MenuServiceImpl implements MenuService{
     }
 
     @Override
-    public int removeMenu(Menu menu) throws Exception {
-        return menuMapper.deleteMenu(menu);
+    public int removeMenu(Integer no) throws Exception {
+        return menuMapper.deleteMenu(no);
     }
 
     @Override

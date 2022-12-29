@@ -12,7 +12,7 @@ public interface MenuMapper {
     public Menu selectMenuInfo(int no) throws Exception;
     public int insertMenu(Menu menu) throws Exception;
     public int updateMenu(Menu menu) throws Exception;
-    public int deleteMenu(Menu menu) throws Exception;
-    public void updateSaleCount(int no) throws Exception;
+    public int deleteMenu(Integer no) throws Exception;
+    public void updateSaleCount(Integer no) throws Exception;
 
 }
